@@ -371,6 +371,19 @@ export const abi = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_intentHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "cancelIntent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "convenienceRewardTimePeriod",
     "outputs": [
@@ -668,6 +681,57 @@ export const abi = [
         "internalType": "struct Ramp.Deposit[]",
         "name": "depositArray",
         "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_intentHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getIntentAndOnRamperId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "onRamper",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "deposit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "intentTimestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Ramp.Intent",
+        "name": "",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
       }
     ],
     "stateMutability": "view",
