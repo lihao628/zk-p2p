@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro'
+import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 
 import { ThemedText } from '../../theme/text'
 import { IntentRow, IntentRowData } from "./OnRamperIntentRow";
@@ -7,7 +8,7 @@ import { fromUsdcToNaturalBigInt,  } from '@helpers/units'
 import { SECONDS_IN_DAY  } from '@helpers/constants'
 import useOnRamperIntents from '@hooks/useOnRamperIntents'
 import useRampState from '@hooks/useRampState';
-
+import useSmartContracts from '@hooks/useSmartContracts';
 
 
 interface IntentTableProps {
@@ -22,22 +23,50 @@ export const IntentTable: React.FC<IntentTableProps> = ({
   rowsPerPage = 3
 }) => {
   /*
-    Contexts
-  */
+   * Contexts
+   */
 
- const { currentIntent } = useOnRamperIntents()
+ const { currentIntent, currentIntentHash } = useOnRamperIntents()
  const { convenienceRewardTimePeriod } = useRampState()
+ const { rampAddress, rampAbi } = useSmartContracts()
 
   
   /*
-    State
-  */
+   * State
+   */
 
   const [intentsRowData, setIntentsRowData] = useState<IntentRowData[]>([]);
 
+  const [shouldConfigureCancelIntentWrite, setShouldConfigureCancelIntentWrite] = useState<boolean>(false);
+
   /*
-    Hooks
-  */
+   * Contract Writes
+   */
+
+  //
+  // cancelIntent(bytes32 _intentHash)
+  //
+  const { config: writeCancelIntentConfig } = usePrepareContractWrite({
+    address: rampAddress,
+    abi: rampAbi,
+    functionName: 'cancelIntent',
+    args: [
+      currentIntentHash
+    ],
+    onError: (error: { message: any }) => {
+      console.error(error.message);
+    },
+    enabled: shouldConfigureCancelIntentWrite
+  });
+
+  const {
+    isLoading: isWriteCancelIntentLoading,
+    write: writeCancelIntent
+  } = useContractWrite(writeCancelIntentConfig);
+
+  /*
+   * Hooks
+   */
  
   useEffect(() => {
     if (!currentIntent) {
@@ -60,8 +89,8 @@ export const IntentTable: React.FC<IntentTableProps> = ({
   }, [currentIntent]);
 
   /*
-    Helpers
-  */
+   * Helpers
+   */
 
   function convertDepositAmountToUSD(depositAmount: bigint): string {
     const humanReadableDepositAmount = fromUsdcToNaturalBigInt(depositAmount);

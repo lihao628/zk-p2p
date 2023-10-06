@@ -50,7 +50,7 @@ export const PermissionTable: React.FC<PermissionTableProps> = ({
 
   /*
    * Deny list functions:
-   * addAccountToDenylist(bytes32 _deniedUser)
+   *
    * removeAccountFromDenylist(bytes32 _approvedUser)
    */
 
