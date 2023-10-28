@@ -404,7 +404,12 @@ async function test_generate(writeToFile: boolean = true) {
   if (writeToFile) {
     const email_file_dir = args.email_file.substring(0, args.email_file.lastIndexOf("/") + 1);
     // const email_file = args.email_file.substring(args.email_file.lastIndexOf("/") + 1, args.email_file.lastIndexOf("."));
-    const filename = args.nonce ? `${email_file_dir}/../inputs/input_venmo_${args.email_type}_${args.nonce}.json` : `${email_file_dir}/../inputs/input_venmo_${args.email_type}.json`;
+    let filename;
+    if (args.email_type === CircuitType.EMAIL_VENMO_RECEIVE || args.email_type === CircuitType.EMAIL_VENMO_SEND || args.email_type === CircuitType.EMAIL_VENMO_REGISTRATION) {
+      filename = args.nonce ? `${email_file_dir}/../inputs/input_venmo_${args.email_type}_${args.nonce}.json` : `${email_file_dir}/../inputs/input_venmo_${args.email_type}.json`;
+    } else if (args.email_type === CircuitType.HDFC_SEND) {
+      filename = args.nonce ? `${email_file_dir}/../inputs/input_${args.email_type}_${args.nonce}.json` : `${email_file_dir}/../inputs/input_${args.email_type}.json`;
+    }
     console.log(`Writing to default file ${filename}`);
     fs.writeFileSync(filename, JSON.stringify(gen_inputs), { flag: "w" });
   }
